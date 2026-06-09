@@ -233,8 +233,12 @@
     if(!currentFile) return;
     renderBtn.disabled = true; resetBtn.disabled = true;
     dlBtn.style.display='none';
-    note.className='note'; note.textContent='Engraving in progress — this takes a moment.';
+    note.className='note';
     outFrame.className='frame working'; outFrame.innerHTML='';
+    const t0 = Date.now();
+    const tick = ()=>{ const s = Math.floor((Date.now()-t0)/1000); note.textContent = 'Engraving your portrait… ' + s + 's · This can take up to a minute — please keep this page open while it works.'; };
+    tick();
+    const timer = setInterval(tick, 1000);
     try{
       const fd = new FormData();
       fd.append('photo', currentFile);
@@ -256,6 +260,7 @@
       outFrame.innerHTML='<span class="empty">&mdash;</span>';
       note.className='note err'; note.textContent = err.message || 'Something went wrong.';
     }finally{
+      clearInterval(timer);
       renderBtn.disabled=false; resetBtn.disabled=false;
     }
   });
