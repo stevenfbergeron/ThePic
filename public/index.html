@@ -70,6 +70,8 @@
 
   /* Dropzone */
   .dropzone{
+    display:block;
+    width:100%;
     border:1.5px dashed var(--line);
     border-radius:3px;
     background:linear-gradient(180deg,#fffefb,#faf6ee);
@@ -83,7 +85,7 @@
   .dropzone h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:24px;margin-bottom:6px}
   .dropzone p{font-size:13.5px;color:var(--ink-soft)}
   .dropzone .hint{font-size:12px;color:#9a9182;margin-top:12px;letter-spacing:.02em}
-  input[type=file]{display:none}
+  input[type=file]{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;opacity:0}
 
   /* Stage (after upload) */
   .stage{display:none;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
