@@ -110,9 +110,7 @@ export async function onRequestPost(context) {
   }
 
   if (!resp.ok) {
-    const detail = await resp.text().catch(() => '');
-    // TEMP diagnostic: surface upstream status + message so we can see Gemini's actual error.
-    return json(502, { error: 'Gemini ' + resp.status + ': ' + detail.slice(0, 400) });
+    return json(502, { error: 'The engraving could not be completed. Please try another photo.' });
   }
 
   let data;
