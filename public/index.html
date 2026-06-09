@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hedcut Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#1a1714;
+    --ink-soft:#4a443d;
+    --cream:#f6f1e7;
+    --cream-deep:#efe8da;
+    --line:#d8cfbd;
+    --gold:#9a7b3f;
+    --paper:#fffdf8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px;width:100%}
+
+  /* Masthead */
+  header.masthead{
+    text-align:center;
+    padding:54px 0 26px;
+    border-bottom:1px solid var(--line);
+  }
+  .masthead .kicker{
+    font-size:11px;letter-spacing:.42em;text-transform:uppercase;
+    color:var(--gold);font-weight:500;margin-bottom:14px;
+  }
+  .masthead h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:500;font-size:clamp(38px,6vw,68px);
+    letter-spacing:.01em;line-height:1.02;
+  }
+  .masthead .sub{
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:clamp(16px,2.4vw,21px);color:var(--ink-soft);margin-top:10px;
+  }
+
+  main{flex:1;padding:42px 0 60px}
+
+  .lead{
+    max-width:620px;margin:0 auto 38px;text-align:center;
+    font-size:16px;color:var(--ink-soft);
+  }
+
+  /* Studio card */
+  .studio{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:3px;
+    box-shadow:0 1px 0 #fff inset, 0 18px 50px -28px rgba(26,23,20,.4);
+    padding:34px;
+  }
+
+  /* Dropzone */
+  .dropzone{
+    border:1.5px dashed var(--line);
+    border-radius:3px;
+    background:linear-gradient(180deg,#fffefb,#faf6ee);
+    padding:54px 24px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .dropzone:hover,.dropzone.drag{border-color:var(--gold);background:#fffaf0}
+  .dropzone .icon{font-family:'Cormorant Garamond',serif;font-size:46px;color:var(--gold);line-height:1;margin-bottom:12px}
+  .dropzone h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:24px;margin-bottom:6px}
+  .dropzone p{font-size:13.5px;color:var(--ink-soft)}
+  .dropzone .hint{font-size:12px;color:#9a9182;margin-top:12px;letter-spacing:.02em}
+  input[type=file]{display:none}
+
+  /* Stage (after upload) */
+  .stage{display:none;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+  .stage.show{display:grid}
+  @media(max-width:720px){.stage{grid-template-columns:1fr}}
+  .panel{}
+  .panel .label{
+    font-size:10.5px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:10px;text-align:center;
+  }
+  .frame{
+    background:#fff;border:1px solid var(--line);
+    border-radius:2px;padding:12px;
+    box-shadow:0 10px 30px -22px rgba(26,23,20,.5);
+    aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .frame img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+  .frame.empty{color:#bcb3a1;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px}
+
+  /* Loading shimmer over result frame */
+  .working{position:relative}
+  .working::after{
+    content:"";position:absolute;inset:12px;border-radius:2px;
+    background:linear-gradient(110deg,#f3eee3 8%,#fbf8f1 18%,#f3eee3 33%);
+    background-size:220% 100%;animation:sh 1.4s linear infinite;
+  }
+  @keyframes sh{to{background-position:-220% 0}}
+
+  /* Controls */
+  .controls{margin-top:30px;text-align:center}
+  button.act{
+    font-family:'Inter',sans-serif;font-weight:500;font-size:13px;
+    letter-spacing:.16em;text-transform:uppercase;
+    background:var(--ink);color:var(--cream);
+    border:none;border-radius:2px;padding:16px 34px;cursor:pointer;
+    transition:background .2s ease, transform .05s ease;
+  }
+  button.act:hover{background:#000}
+  button.act:active{transform:translateY(1px)}
+  button.act:disabled{background:#bcb3a1;cursor:not-allowed}
+  button.ghost{
+    background:none;color:var(--ink-soft);border:1px solid var(--line);
+    margin-left:10px;
+  }
+  button.ghost:hover{background:var(--cream-deep);color:var(--ink)}
+  .note{font-size:12.5px;color:var(--ink-soft);margin-top:16px;min-height:18px}
+  .note.err{color:#9b3a2f}
+
+  footer{
+    border-top:1px solid var(--line);
+    text-align:center;padding:26px 0;
+    font-size:12px;color:#9a9182;letter-spacing:.04em;
+  }
+  footer .fl{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap">
+      <div class="kicker">Hand-Engraved · By Request</div>
+      <h1>Hedcut Studio</h1>
+      <div class="sub">A portrait in the manner of the masters &mdash; from a single photograph.</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <p class="lead">Choose a photograph of someone you love. In a moment it returns as a fine stipple-and-line engraving, rendered as if cut by hand for the front page.</p>
+
+      <section class="studio">
+        <!-- Upload -->
+        <label class="dropzone" id="dropzone" for="file">
+          <div class="icon">&#10086;</div>
+          <h3>Place a photograph here</h3>
+          <p>Click to choose, or drag a photo in</p>
+          <div class="hint">A clear, front-facing portrait works best · JPG or PNG</div>
+        </label>
+        <input type="file" id="file" accept="image/jpeg,image/png,image/webp" />
+
+        <!-- Stage -->
+        <div class="stage" id="stage">
+          <div class="panel">
+            <div class="label">Your Photograph</div>
+            <div class="frame" id="srcFrame"><span class="empty">&mdash;</span></div>
+          </div>
+          <div class="panel">
+            <div class="label">The Engraving</div>
+            <div class="frame empty" id="outFrame"><span class="empty">awaiting</span></div>
+          </div>
+        </div>
+
+        <div class="controls" id="controls" style="display:none">
+          <button class="act" id="render">Create the Engraving</button>
+          <button class="act ghost" id="reset">Start over</button>
+          <button class="act ghost" id="download" style="display:none">Download print-ready</button>
+          <div class="note" id="note"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="fl">Made for you.</div>
+      <div style="margin-top:6px">Your photographs are used only to create your engraving and are never stored.</div>
+    </div>
+  </footer>
+
+<script>
+  const $ = s => document.querySelector(s);
+  const fileInput = $('#file'), dz = $('#dropzone'), stage = $('#stage'),
+        controls = $('#controls'), srcFrame = $('#srcFrame'), outFrame = $('#outFrame'),
+        renderBtn = $('#render'), resetBtn = $('#reset'), dlBtn = $('#download'), note = $('#note');
+  let currentFile = null, resultUrl = null;
+
+  function setSource(file){
+    currentFile = file;
+    const url = URL.createObjectURL(file);
+    srcFrame.innerHTML = '<img alt="source" src="'+url+'">';
+    outFrame.className = 'frame empty';
+    outFrame.innerHTML = '<span class="empty">awaiting</span>';
+    stage.classList.add('show');
+    controls.style.display = 'block';
+    dz.style.display = 'none';
+    dlBtn.style.display = 'none';
+    note.textContent = '';
+    note.className = 'note';
+  }
+
+  dz.addEventListener('dragover', e=>{e.preventDefault();dz.classList.add('drag')});
+  dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop', e=>{
+    e.preventDefault();dz.classList.remove('drag');
+    if(e.dataTransfer.files[0]) setSource(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e=>{ if(e.target.files[0]) setSource(e.target.files[0]); });
+
+  resetBtn.addEventListener('click', ()=>{
+    currentFile=null; resultUrl=null; fileInput.value='';
+    stage.classList.remove('show'); controls.style.display='none';
+    dz.style.display='block';
+  });
+
+  renderBtn.addEventListener('click', async ()=>{
+    if(!currentFile) return;
+    renderBtn.disabled = true; resetBtn.disabled = true;
+    dlBtn.style.display='none';
+    note.className='note'; note.textContent='Engraving in progress — this takes a moment.';
+    outFrame.className='frame working'; outFrame.innerHTML='';
+    try{
+      const fd = new FormData();
+      fd.append('photo', currentFile);
+      const res = await fetch('/api/render', { method:'POST', body: fd });
+      if(!res.ok){
+        let msg = 'Something went wrong. Please try another photo.';
+        if(res.status===429) msg = 'The studio is resting for today — please try again tomorrow.';
+        try{ const j = await res.json(); if(j && j.error) msg = j.error; }catch(_){}
+        throw new Error(msg);
+      }
+      const blob = await res.blob();
+      resultUrl = URL.createObjectURL(blob);
+      outFrame.className='frame';
+      outFrame.innerHTML = '<img alt="engraving" src="'+resultUrl+'">';
+      dlBtn.style.display='inline-block';
+      note.textContent = 'Your engraving is ready.';
+    }catch(err){
+      outFrame.className='frame empty';
+      outFrame.innerHTML='<span class="empty">&mdash;</span>';
+      note.className='note err'; note.textContent = err.message || 'Something went wrong.';
+    }finally{
+      renderBtn.disabled=false; resetBtn.disabled=false;
+    }
+  });
+
+  dlBtn.addEventListener('click', ()=>{
+    if(!resultUrl) return;
+    const a=document.createElement('a');
+    a.href=resultUrl; a.download='engraving.png'; a.click();
+  });
+</script>
+</body>
+</html>
