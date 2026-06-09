@@ -85,7 +85,7 @@ export async function onRequestPost(context) {
 
   // 4) Call Gemini.
   const model = env.GEMINI_MODEL || 'gemini-3-pro-image-preview';
-  const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
   const body = {
     contents: [
       { role: 'user', parts: [
@@ -94,8 +94,7 @@ export async function onRequestPost(context) {
       ] }
     ],
     generationConfig: {
-      responseModalities: ['TEXT', 'IMAGE'],
-      responseFormat: { image: { imageSize: env.IMAGE_SIZE || '2K' } }
+      responseModalities: ['TEXT', 'IMAGE']
     }
   };
 
@@ -111,7 +110,9 @@ export async function onRequestPost(context) {
   }
 
   if (!resp.ok) {
-    return json(502, { error: 'The engraving could not be completed. Please try another photo.' });
+    const detail = await resp.text().catch(() => '');
+    // TEMP diagnostic: surface upstream status + message so we can see Gemini's actual error.
+    return json(502, { error: 'Gemini ' + resp.status + ': ' + detail.slice(0, 400) });
   }
 
   let data;
